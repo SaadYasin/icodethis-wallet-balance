@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wallet — Balance &amp; Payment Requests (Demo)</title>
+  <meta name="description" content="Demo wallet interface with a balance header and payment requests. Sample data only — no real account is connected." />
+  <meta name="theme-color" content="#eceef7" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            page: '#eceef7',
+            ink: '#2f2f42',
+            body: '#414253',
+            muted: '#5f6373',
+            accent: '#5a50e6',
+            accentdark: '#4840cc'
+          },
+          fontFamily: {
+            sans: ['"Source Sans 3"', '"Segoe UI"', 'system-ui', '-apple-system', 'sans-serif']
+          },
+          boxShadow: {
+            card: '0 30px 70px -28px rgba(74, 66, 197, 0.4), 0 8px 24px -12px rgba(74, 66, 197, 0.18)'
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="style.css" />
+    
+</head>
+<body class="min-h-screen min-h-dvh overflow-x-hidden bg-page font-sans text-body antialiased">
+
+  <div class="flex min-h-screen min-h-dvh justify-center px-4 pb-14 pt-8 sm:px-6 sm:pb-20 sm:pt-14">
+    <div class="w-full max-w-[490px]">
+      <div class="relative rounded-lg bg-white shadow-card ring-1 ring-slate-900/5">
+
+        <!-- ============ Header ============ -->
+        <header class="header-gradient relative rounded-t-lg text-white">
+
+          <!-- Top navigation row -->
+          <div class="flex items-start px-3.5 pt-4 sm:px-6 sm:pt-5">
+            <button id="menu-btn" type="button" aria-expanded="false" aria-controls="app-menu" aria-label="Open menu"
+              class="-ml-1 rounded-lg p-2 text-white/90 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80">
+              <svg width="26" height="18" viewBox="0 0 26 18" fill="none" aria-hidden="true">
+                <path d="M1 1.5h24M1 9h24M1 16.5h24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+
+            <nav aria-label="Wallet sections" class="ml-2 flex flex-1 items-center justify-between pl-1 sm:ml-5">
+              <button type="button" data-view="summary" aria-current="page"
+                class="nav-link relative whitespace-nowrap rounded-md px-1 py-1 text-[13px] text-white transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:text-base">
+                Summary
+                <span aria-hidden="true" class="absolute -right-1 top-0.5 h-[7px] w-[7px] rounded-full bg-[#7fe4f7]"></span>
+              </button>
+              <button type="button" data-view="activity"
+                class="nav-link relative whitespace-nowrap rounded-md px-1 py-1 text-[13px] text-white/75 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:text-base">
+                Activity
+              </button>
+              <button type="button" data-view="send"
+                class="nav-link relative whitespace-nowrap rounded-md px-1 py-1 text-[13px] text-white/75 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:text-base">
+                Send/request
+              </button>
+            </nav>
+          </div>
+
+          <!-- Hamburger dropdown -->
+          <div id="app-menu" class="popover absolute left-3 top-[58px] z-30 w-60 rounded-2xl bg-white p-2 text-left shadow-2xl ring-1 ring-slate-900/10" aria-label="Account menu">
+            <p class="px-3 pb-0.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Demo account</p>
+            <p class="px-3 pb-2 pt-0.5 text-sm text-body">demo@wallet.app</p>
+            <div class="my-1 h-px bg-slate-100"></div>
+            <button type="button" data-menu-item class="w-full rounded-xl px-3 py-2.5 text-left text-[15px] text-body transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:bg-slate-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/60">Account settings</button>
+            <button type="button" data-menu-item class="w-full rounded-xl px-3 py-2.5 text-left text-[15px] text-body transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:bg-slate-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/60">Payment methods</button>
+            <button type="button" data-menu-item class="w-full rounded-xl px-3 py-2.5 text-left text-[15px] text-body transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:bg-slate-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/60">Help &amp; support</button>
+            <div class="my-1 h-px bg-slate-100"></div>
+            <button type="button" data-menu-item class="w-full rounded-xl px-3 py-2.5 text-left text-[15px] text-body transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:bg-slate-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/60">Sign out</button>
+          </div>
+
+          <!-- Balance -->
+          <h1 class="px-6 pb-[88px] pt-9 text-center sm:pt-11">
+            <span class="block text-[14px] font-semibold uppercase tracking-[0.18em] text-white/90 sm:text-[17px]">Your balance</span>
+            <span class="mt-1 block text-[32px] font-bold leading-tight tracking-[-0.01em] sm:text-[37px]">244.53 USD</span>
+          </h1>
+
+          <!-- Curved wave edge into the white content area -->
+          <svg class="pointer-events-none absolute inset-x-0 bottom-0 block h-[74px] w-full" viewBox="0 0 490 74" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0,36 C60,16 120,8 190,20 C260,32 320,58 395,62 C435,64 468,54 490,44 L490,74 L0,74 Z" fill="#ffffff"/>
+          </svg>
+
+          <!-- Status tabs straddling the wave -->
+          <div id="tab-row" role="tablist" aria-label="Payment request filters" class="absolute inset-x-0 bottom-0 flex h-[74px] items-start justify-center pt-[22px]">
+            <button type="button" role="tab" id="tab-pending" aria-selected="true" aria-controls="panel-pending" tabindex="0"
+              class="mr-[11%] rounded-md px-2 pb-0.5 text-center text-[13px] font-semibold uppercase tracking-[0.16em] text-ink transition-colors duration-200 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 sm:text-[15px]">
+              Pending
+              <span aria-hidden="true" class="tab-underline mx-auto mt-1 block h-[3px] w-7 rounded-full bg-current transition-opacity duration-200"></span>
+            </button>
+            <button type="button" role="tab" id="tab-completed" aria-selected="false" aria-controls="panel-completed" tabindex="-1"
+              class="ml-[11%] rounded-md px-2 pb-0.5 text-center text-[13px] font-semibold uppercase tracking-[0.16em] text-white/70 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:text-[15px]">
+              Completed
+              <span aria-hidden="true" class="tab-underline mx-auto mt-1 block h-[3px] w-7 rounded-full bg-current opacity-0 transition-opacity duration-200"></span>
+            </button>
+          </div>
+        </header>
+
+        <!-- ============ Content ============ -->
+        <main class="relative -mt-px rounded-b-lg bg-white">
+
+          <!-- Pending requests -->
+          <section id="panel-pending" role="tabpanel" aria-labelledby="tab-pending" tabindex="-1" class="panel-enter px-4 pb-1 pt-7 focus:outline-none sm:px-7 sm:pt-8">
+            <h2 class="sr-only">Pending payment requests</h2>
+            <ul id="request-list" class="space-y-9"></ul>
+
+            <div id="pending-empty" hidden class="py-12 text-center sm:py-14">
+              <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent/10">
+                <svg class="h-7 w-7 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 13h4l2 3h6l2-3h4"/>
+                  <path d="M5.5 5.5h13L21 13v6H3v-6l2.5-7.5z"/>
+                </svg>
+              </span>
+              <p class="mt-5 text-[17px] font-bold text-ink">No pending requests</p>
+              <p class="mx-auto mt-1.5 max-w-[300px] text-sm leading-relaxed text-muted">Payment requests you send will be listed here until they&rsquo;re paid or cancelled.</p>
+            </div>
+
+            <noscript>
+              <p class="py-10 text-center text-sm text-muted">Enable JavaScript to see the sample payment requests in this demo.</p>
+            </noscript>
+          </section>
+
+          <!-- Completed requests -->
+          <section id="panel-completed" role="tabpanel" aria-labelledby="tab-completed" tabindex="-1" hidden class="panel-enter px-4 focus:outline-none sm:px-7">
+            <h2 class="sr-only">Completed payment requests</h2>
+            <div class="py-12 text-center sm:py-14">
+              <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent/10">
+                <svg class="h-7 w-7 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" class="opacity-30"/>
+                  <path d="m8.5 12.5 2.5 2.5 4.8-5.5"/>
+                </svg>
+              </span>
+              <p class="mt-5 text-[17px] font-bold text-ink">No completed requests yet</p>
+              <p class="mx-auto mt-1.5 max-w-[300px] text-sm leading-relaxed text-muted">When a pending request is paid, the completed payment will be listed here.</p>
+            </div>
+          </section>
+
+          <footer class="px-6 pb-8 pt-3 text-center">
+            <p class="text-xs leading-relaxed text-slate-400">Demo interface with sample data — no real account is connected and no money is moved.</p>
+          </footer>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Overlay + dialogs ============ -->
+  <div id="overlay" aria-hidden="true" class="fixed inset-0 z-40 bg-[#221e46]/50 backdrop-blur-[2px]"></div>
+
+  <div id="edit-dialog" class="dlg rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-slate-900/10" role="dialog" aria-modal="true" aria-labelledby="edit-title" aria-describedby="edit-sub">
+    <h2 id="edit-title" class="text-lg font-bold text-ink">Edit amount</h2>
+    <p id="edit-sub" class="mt-1 text-sm text-muted">Payment request to Bright Star Inc.</p>
+    <form id="edit-form" novalidate class="mt-5">
+      <label for="amount-input" class="block text-sm font-semibold text-ink">New amount (<span id="edit-currency">USD</span>)</label>
+      <input id="amount-input" name="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"
+        class="mt-2 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-2.5 text-base text-ink transition-colors placeholder:text-slate-300 focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15"
+        aria-describedby="amount-error" />
+      <p id="amount-error" role="alert" hidden class="mt-2 text-sm font-medium text-red-600"></p>
+      <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <button type="button" data-dialog-close class="rounded-full border-2 border-slate-200 px-5 py-2 text-sm font-semibold text-body transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50">Cancel</button>
+        <button type="submit" class="rounded-full bg-accent px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-accentdark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">Save changes</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="confirm-dialog" class="dlg rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-slate-900/10" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-body">
+    <h2 id="confirm-title" class="text-lg font-bold text-ink">Cancel this payment request?</h2>
+    <p id="confirm-body" class="mt-2 text-sm leading-relaxed text-muted"></p>
+    <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+      <button type="button" id="confirm-keep" data-dialog-close class="rounded-full border-2 border-slate-200 px-5 py-2 text-sm font-semibold text-body transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50">Keep request</button>
+      <button type="button" id="confirm-remove" class="rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2">Cancel request</button>
+    </div>
+  </div>
+
+  <!-- ============ Toasts ============ -->
+  <div id="toast-region" role="status" aria-live="polite" class="pointer-events-none fixed inset-x-0 bottom-5 z-[70] flex flex-col items-center gap-2 px-4"></div>
+
+  <script src="script.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+/* Header gradient with soft cyan glow near the lower-left edge */
+    .header-gradient {
+      background:
+        radial-gradient(85% 130% at 2% 102%, rgba(103, 225, 244, 0.8) 0%, rgba(103, 225, 244, 0) 42%),
+        radial-gradient(70% 70% at 100% 0%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 55%),
+        linear-gradient(101deg, #4d63f0 0%, #6a5bee 46%, #9b6cf1 100%);
+    }
+
+    /* Dialogs (positioning/transition details Tailwind can't express cleanly) */
+    .dlg {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      z-index: 50;
+      width: min(92vw, 400px);
+      transform: translate(-50%, -50%) scale(0.95);
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+    }
+    .dlg.is-open {
+      visibility: visible;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s;
+    }
+
+    #overlay {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+    }
+    #overlay.is-open {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Hamburger popover */
+    .popover {
+      visibility: hidden;
+      opacity: 0;
+      transform: scale(0.95);
+      transform-origin: top left;
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
+    }
+    .popover.is-open {
+      visibility: visible;
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s;
+    }
+
+    /* Toasts */
+    .toast {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .toast.toast-in { opacity: 1; transform: none; }
+    .toast.toast-out { opacity: 0; transform: translateY(6px); }
+
+    /* Request removal */
+    #request-list > li { transition: opacity 0.24s ease, transform 0.24s ease; }
+    #request-list > li.removing { opacity: 0; transform: scale(0.97); }
+
+    /* Panel enter animation (replays when a hidden panel is shown) */
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+    .panel-enter { animation: panelIn 0.28s ease both; }
+
+    :focus-visible { outline: 2px solid #5a50e6; outline-offset: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
